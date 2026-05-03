@@ -1,0 +1,9 @@
+{
+  "name": "hostel-curfew-frontend",
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" }
+  ]
+}
