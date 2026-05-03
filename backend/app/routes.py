@@ -38,12 +38,12 @@ async def admin_login(username: str = Form(...), password: str = Form(...), db: 
     return {"token": token, "username": admin.username}
 
 
-# [GPS] MOCK HOSTEL COORDINATES
-# IMPORTANT: For your demo, change "amna" (or whichever you register as) to your EXACT classroom coordinates!
+
+# IMPORTANT: For your demo, change "ayesha" (or whichever you register as) to your EXACT classroom coordinates!
 # You can get your classroom coordinates from Google Maps (right click on the map -> copy coordinates).
 HOSTEL_LOCATIONS = {
     "amna": {"lat": 33.6255, "lng": 72.9516}, 
-    "ayesha": {"lat": 33.64, "lng": 72.99},
+    "ayesha": {"lat": 33.64440, "lng": 72.99218}, # NLS coordinates
     "khadija": {"lat": 33.62, "lng": 72.96},
     "zainab": {"lat": 33.64557, "lng": 72.99406},
 }
