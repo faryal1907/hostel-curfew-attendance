@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Hostel Attendance</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        /* Stats Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Curfew Banner */
+        .curfew-banner {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8));
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .curfew-active { border-left-color: var(--success); }
+        .curfew-closed { border-left-color: var(--warning); }
+
+        .curfew-status-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Split */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            padding: 1.5rem;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Custom Scrollbar */
+        .panel-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .panel-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        .panel-content::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+
+        /* Lists */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name {
+            font-weight: 600;
+        }
+
+        .item-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Alerts */
+        .alert-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--danger);
+        }
+        
+        .alert-item.absentee {
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div>
+                <h2>Smart Hostel</h2>
+                <p>Curfew Attendance System</p>
+            </div>
+            <nav class="nav-links">
+                <a href="register.html">Register</a>
+                <a href="attendance.html">Attendance Kiosk</a>
+                <a href="mobile.html">Mobile Check-in</a>
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <button onclick="logout()" class="btn btn-outline" style="padding: 0.5rem 1rem; margin-left: 1rem; border-color: var(--danger); color: var(--danger);">Logout</button>
+            </nav>
+        </header>
+
+        <main class="dashboard-grid animate-fade-in">
+            <!-- Curfew Status Banner -->
+            <div class="glass curfew-banner" id="curfew-banner">
+                <div>
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">System Status</span>
+                    <div class="curfew-status-text" id="curfew-text">Loading...</div>
+                </div>
+                <button class="btn btn-outline" onclick="fetchStats()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-grid">
+                <div class="glass stat-card">
+                    <div class="stat-title">Total Students</div>
+                    <div class="stat-value" id="stat-total">-</div>
+                </div>
+                <div class="glass stat-card">
+                    <div class="stat-title">Present</div>
+                    <div class="stat-value" id="stat-present" style="background: linear-gradient(135deg, #34d399, #10b981); -webkit-background-clip: text;">-</div>
+                </div>
+                <div class="glass stat-card">
+                    <div class="stat-title">Absent</div>
+                    <div class="stat-value" id="stat-absent" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text;">-</div>
+                </div>
+                <div class="glass stat-card">
+                    <div class="stat-title">Unknown Attempts</div>
+                    <div class="stat-value" id="stat-unknown" style="background: linear-gradient(135deg, #f87171, #ef4444); -webkit-background-clip: text;">-</div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="content-grid">
+                <!-- Recent Activity -->
+                <div class="glass panel">
+                    <div class="panel-header">
+                        <h3>Recent Activity</h3>
+                    </div>
+                    <div class="panel-content" id="activity-list">
+                        <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">Loading activity...</div>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div class="glass panel">
+                    <div class="panel-header">
+                        <h3 style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> System Alerts</h3>
+                    </div>
+                    <div class="panel-content" id="alerts-list">
+                        <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">Loading alerts...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- AUTH GUARD ---
+        const token = localStorage.getItem('admin_token');
+        console.log("DEBUG: Admin Token found in localStorage:", token);
+
+        if (!token) {
+            window.location.href = 'admin_login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_user');
+            window.location.href = 'admin_login.html';
+        }
+
+        async function fetchStats() {
+            try {
+                const response = await fetch("http://localhost:8000/dashboard-stats", {
+                    headers: { 'X-Admin-Token': token }
+                });
+                
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+                
+                const data = await response.json();
+
+                // Update Stats
+                document.getElementById('stat-total').textContent = data.total_students;
+                document.getElementById('stat-present').textContent = data.present;
+                document.getElementById('stat-absent').textContent = data.absent;
+                document.getElementById('stat-unknown').textContent = data.unknown_attempts;
+
+                // Update Curfew Banner
+                const banner = document.getElementById('curfew-banner');
+                const text = document.getElementById('curfew-text');
+                if (data.curfew_active) {
+                    banner.className = "glass curfew-banner curfew-active";
+                    text.innerHTML = '<i class="fas fa-clock"></i> Curfew Window Active (Accepting Attendance)';
+                    text.style.color = "var(--success)";
+                } else {
+                    banner.className = "glass curfew-banner curfew-closed";
+                    text.innerHTML = '<i class="fas fa-lock"></i> Curfew Closed (Absentees Generated)';
+                    text.style.color = "var(--warning)";
+                }
+
+                // Update Activity
+                const activityList = document.getElementById('activity-list');
+                activityList.innerHTML = '';
+                if (data.recent_activity.length === 0) {
+                    activityList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">No recent activity</div>';
+                } else {
+                    data.recent_activity.forEach(log => {
+                        const isPresent = log.status === 'Present';
+                        const badgeClass = isPresent ? 'badge-present' : 'badge-unknown';
+                        
+                        activityList.innerHTML += `
+                            <div class="list-item">
+                                <div class="item-info">
+                                    <span class="item-name">${log.name}</span>
+                                    <span class="item-time">${log.time}</span>
+                                </div>
+                                <span class="badge ${badgeClass}">${log.status}</span>
+                            </div>
+                        `;
+                    });
+                }
+
+                const alertsList = document.getElementById('alerts-list');
+                alertsList.innerHTML = '';
+                if (data.alerts.length === 0) {
+                    alertsList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;"><i class="fas fa-check-circle" style="color: var(--success);"></i> No active alerts</div>';
+                } else {
+                    data.alerts.forEach(alertText => {
+                        const isAbsentee = alertText.includes('Absentee');
+                        const alertClass = isAbsentee ? 'alert-item absentee' : 'alert-item';
+                        const icon = isAbsentee ? '<i class="fas fa-user-clock"></i>' : '<i class="fas fa-user-secret"></i>';
+                        
+                        alertsList.innerHTML += `
+                            <div class="${alertClass}">
+                                <span>${icon}</span>
+                                <span>${alertText}</span>
+                            </div>
+                        `;
+                    });
+                }
+
+            } catch (err) {
+                console.error("Failed to fetch dashboard stats", err);
+                document.getElementById('curfew-text').textContent = "Error connecting to server";
+            }
+        }
+
+        // Fetch on load
+        fetchStats();
+
+        // Optional: Auto-refresh every 5 seconds
+        setInterval(fetchStats, 5000);
+    </script>
+</body>
+</html>

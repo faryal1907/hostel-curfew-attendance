@@ -1,103 +1,97 @@
-Here is your project documentation formatted in clean, organized Markdown.
+# Smart Hostel Curfew Attendance & Alert System
 
-# 📌 Hostel Curfew Attendance and Alert System (Prototype)
-
-## 🧠 Overview
-This project is a web-based prototype of a **Deep Learning-powered** Hostel Curfew Attendance and Alert System. It utilizes facial recognition to simulate attendance marking, detect unknown users, and prepare for curfew-based enforcement logic. 
-
-The system is built using a lightweight and fast stack optimized for rapid prototyping and semester-level demonstrations.
-
-## ⚙️ Tech Stack
-* **Backend:** FastAPI
-* **Database:** SQLite (via SQLAlchemy)
-* **Face Recognition:** `face-recognition` (dlib-based embeddings)
-* **Image Processing:** OpenCV
-* **Server:** Uvicorn
-* **Language:** Python
+A high-performance, deep learning-powered attendance system designed for university hostels (e.g., NUST H-12 Campus). This project combines facial recognition, GPS geofencing, and automated curfew monitoring into a unified security ecosystem.
 
 ---
 
-## 🏗️ Project Structure (Current Stage)
-```text
-hostel-curfew-attendance/
-│
-├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── routes.py
-│   │
-│   ├── models/
-│   │   ├── database.py
-│   │   ├── face_model.py
-│   │
-│   └── database.db
-│
-├── frontend/ (not implemented yet)
-├── venv/
-├── requirements.txt
-└── README.md
+## 🌟 Core Features
+
+### 1. Deep Learning Facial Verification
+*   **Technology**: Uses a Convolutional Neural Network (CNN) to extract 128-dimensional facial embeddings.
+*   **Accuracy**: Implements similarity learning with a tuned Euclidean distance threshold (0.6) to differentiate between registered students and unauthorized individuals.
+*   **Real-time Processing**: Optimized for low-latency verification in both the Kiosk and Mobile modes.
+
+### 2. Dual-Mode Attendance
+*   **Floor Kiosk**: A dedicated station using the webcam for high-speed, contactless attendance marking at hostel entrances.
+*   **Mobile GPS Check-in**: Allows students to check in via their smartphones. It uses the **Haversine Formula** to verify that the student is within the physical vicinity of their assigned hostel (e.g., Amna, Ayesha, Khadija, or Zainab).
+
+### 3. Automated Curfew Intelligence
+*   **Dynamic Windows**: Attendance is only recorded during configurable curfew windows.
+*   **Automated Absentee Logs**: Once the curfew window closes, the system automatically cross-references the student database to flag anyone who hasn't checked in.
+*   **Security Logging**: Every attempt—whether successful, unrecognized, or outside the curfew window—is logged for administrative review.
+
+### 4. Admin Command Center (Dashboard)
+*   **Real-time Stats**: Track total strength, present count, and absentees at a glance.
+*   **System Alerts**: Instant notification of "Unknown Identity" attempts or unauthorized entries.
+*   **Secured Management**: Protecting student data with a session-based Admin Authentication layer.
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend (The "Brain")
+*   **FastAPI**: A high-performance Python framework for handling concurrent requests.
+*   **SQLAlchemy**: ORM for robust database management and relationship mapping.
+*   **SQLite**: Lightweight, portable relational database.
+*   **Dependency Injection**: Optimized connection pooling to prevent database leaks during high-traffic periods (Kiosk usage).
+
+### Frontend (The "Interface")
+*   **Vanilla HTML5/CSS3**: Glassmorphic UI design for a premium, modern aesthetic.
+*   **JavaScript (ES6)**: Handles real-time video streaming, GPS API integration, and asynchronous backend communication.
+*   **FontAwesome**: Professional iconography for an enterprise-grade user experience.
+
+---
+
+## 📂 System Architecture
+
+```mermaid
+graph TD
+    A[Student] -->|Webcam Scan| B[Attendance Kiosk]
+    A -->|GPS + Selfie| C[Mobile App]
+    B -->|POST /attendance| D[FastAPI Backend]
+    C -->|POST /mobile-attendance| D
+    D -->|Face Embedding| E[CNN Face Model]
+    E -->|Lookup| F[(SQLite Database)]
+    D -->|Curfew Check| G[Curfew Logic]
+    F -->|Real-time Data| H[Admin Dashboard]
+    H -->|Protected Access| I[Hostel Manager]
 ```
 
 ---
 
-## 🚀 Current Features Implemented
+## 🚀 Getting Started
 
-### ✅ 1. FastAPI Backend Setup
-* Initialized FastAPI application.
-* Configured routing system.
-* Running local development server using Uvicorn.
+### 1. Environment Setup
+```bash
+# Install dependencies
+pip install -r requirements.txt
+```
 
-### ✅ 2. Database Setup (SQLite)
-* Created SQLite database using **SQLAlchemy**.
-* **Defined Core Models:**
-    * `User`: Student information + face embedding.
-    * `AttendanceLog`: Timestamped attendance records.
+### 2. Launch the Backend
+```bash
+uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-### ✅ 3. Face Recognition Module
-Implemented face detection and encoding using the `face-recognition` library.
-* **Features:**
-    * Converts images to 128-d embeddings.
-    * Compares face embeddings using distance metrics.
-    * Detects unknown faces.
+### 3. Launch the Frontend
+```bash
+# Navigate to frontend folder and run a simple server
+python -m http.server 3000
+```
 
-### ✅ 4. API Endpoints
-| Endpoint | Functionality |
-| :--- | :--- |
-| `POST /register` | Registers student with Name, Roll No, Room No, and Face Image. Stores embeddings in SQLite. |
-| `POST /attendance` | Accepts webcam image, extracts embedding, and compares with database. |
+### 4. Admin Credentials
+The system comes pre-seeded with a default administrator account for the first run:
+*   **Username**: `admin`
+*   **Password**: `admin123`
 
 ---
 
-## 🧪 Current System Behavior
-* Students can be registered via API.
-* Attendance can be marked using webcam images.
-* System identifies **Known** vs **Unknown** individuals.
-* All records are persisted in the SQLite database.
-
-> [!CAUTION]
-> **Known Notes / Warnings:**
-> * The first run automatically downloads face recognition models.
-> * Internet is required only once for model initialization.
-> * `pkg_resources` warnings are dependency-related and not critical to system function.
+## 🏛️ Project Structure
+*   `backend/app/routes.py`: Core API logic and security dependencies.
+*   `backend/models/`: Database schemas and Deep Learning face verification logic.
+*   `frontend/`: Premium glassmorphic interface files.
+*   `database.db`: Persistent storage for students, admins, and attendance logs.
 
 ---
 
-## 📍 Next Planned Features
-1.  **⏱ Curfew Logic:** Implementation of a strict 30-minute reporting window.
-2.  **🚨 Auto-Detection:** Automatic identification of non-reporting students.
-3.  **📊 Manager Dashboard:** React-based frontend for monitoring.
-4.  **🔔 Alert System:** Automated notifications for absent students.
-5.  **🎨 UI/UX:** Implementation of a "Dark Premium" dashboard theme.
-
----
-
-## 🎯 Project Status
-* **Phase 1: Backend Core System** → `COMPLETED ✔️`
-* **Phase 2: Logic + Curfew System** → `IN PROGRESS`
-
-## 👥 Team Scope
-This is a **2-member semester project** focusing on:
-* Applied deep learning (face embeddings).
-* Real-world system design.
-* Attendance automation logic.
-* Alert-based monitoring systems.
+## ⚖️ License
+Developed for academic purposes at NUST H-12 Campus. All rights reserved.

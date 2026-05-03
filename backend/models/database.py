@@ -17,6 +17,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     roll_no = Column(String, unique=True)
+    hostel_name = Column(String)
     room_no = Column(String)
     embedding = Column(String)  # store as JSON string
 
@@ -26,5 +27,14 @@ class AttendanceLog(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.datetime.now)
     status = Column(String)  # Present / Unknown
+
+
+class Admin(Base):
+    __tablename__ = "admins"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password_hash = Column(String)
