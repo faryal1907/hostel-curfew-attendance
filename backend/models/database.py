@@ -1,22 +1,11 @@
 from sqlalchemy import create_engine, Column, Integer, String, LargeBinary, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
 import datetime
 
-# Use cloud DB if available, otherwise fallback to local SQLite
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./database.db")
+DATABASE_URL = "sqlite:///./database.db"
 
-# For SQLAlchemy 1.4+, postgres:// must be postgresql://
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
-
-engine_args = {}
-if "sqlite" in DATABASE_URL:
-    engine_args["connect_args"] = {"check_same_thread": False}
-
-engine = create_engine(DATABASE_URL, **engine_args)
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine)
 
 Base = declarative_base()
