@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .mobile-container {
-            max-width: 400px;
-            margin: 2rem auto;
+            width: 100%;
+            max-width: 450px;
+            margin: 1rem auto;
             text-align: center;
         }
 
@@ -79,6 +80,18 @@
             left: 0;
             transform: scaleX(-1);
         }
+
+        @media (max-width: 480px) {
+            .mobile-container {
+                margin: 0 auto;
+            }
+            .mobile-glass {
+                padding: 1.25rem !important;
+                border-radius: 0; /* Full width on tiny screens */
+                border-left: none;
+                border-right: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -98,7 +111,7 @@
         </header>
 
         <main class="animate-fade-in mobile-container">
-            <div class="glass" style="padding: 2rem;">
+            <div class="glass mobile-glass" style="padding: 2rem;">
                 <div class="gps-icon"><i class="fas fa-map-marked-alt"></i></div>
                 <h2 style="margin-bottom: 0.5rem;">GPS Attendance</h2>
                 <p style="margin-bottom: 2rem;">Mark attendance using your phone's location.</p>

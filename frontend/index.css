@@ -194,3 +194,46 @@ select option {
 .animate-fade-in {
     animation: fadeIn 0.5s ease forwards;
 }
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .nav-links a {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        width: 100%; /* Force buttons to full width on small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .nav-links a {
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        text-align: center;
+    }
+}

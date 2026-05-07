@@ -157,6 +157,16 @@
             background: rgba(245, 158, 11, 0.1);
             border-left-color: var(--warning);
         }
+
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .panel {
+                height: auto;
+                max-height: 400px;
+            }
+        }
     </style>
 </head>
 <body>
