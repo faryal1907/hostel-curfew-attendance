@@ -219,7 +219,7 @@ async def mobile_attendance(
 
     distance = haversine(lat, lng, target_lat, target_lng)
 
-    if distance <= 1000:
+    if distance <= 100:
         log = AttendanceLog(
             user_id=user.id,
             status="Present"
@@ -238,7 +238,20 @@ async def mobile_attendance(
 @router.get("/users")
 def get_users(admin: str = Depends(verify_admin), db: Session = Depends(get_db)):
     users = db.query(User).all()
-    return [{"id": u.id, "name": u.name, "roll_no": u.roll_no, "room_no": u.room_no} for u in users]
+    return [{"id": u.id, "name": u.name, "roll_no": u.roll_no, "room_no": u.room_no, "hostel": u.hostel_name} for u in users]
+
+
+@router.delete("/users/{user_id}")
+def delete_user(user_id: int, admin: str = Depends(verify_admin), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Also delete associated logs to maintain referential integrity if needed, 
+    # though with user_id as nullable in logs, they will just become None-linked.
+    db.delete(user)
+    db.commit()
+    return {"message": "User deleted successfully"}
 
 
 @router.get("/generate_absentees")

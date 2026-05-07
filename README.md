@@ -62,6 +62,7 @@ graph TD
 ## 🚀 Getting Started
 
 ### 1. Environment Setup
+In virtual environment in project root:
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -74,6 +75,7 @@ uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 
 ### 3. Launch the Frontend
 ```bash
+cd frontend
 # Navigate to frontend folder and run a simple server
 python -m http.server 3000
 ```
