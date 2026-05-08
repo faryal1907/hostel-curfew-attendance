@@ -14,12 +14,12 @@ Use this guide to perform a seamless demonstration anywhere at anytime. Each cas
 ## 🎭 Scenario 1: The "Authorized Resident" (Kiosk)
 **Goal**: Show successful Deep Learning face verification.
 1.  **Navigate**: Open `Attendance Kiosk`.
-2.  **Action**: Force an "AUTHORIZED" state in `backend/models/curfew.py`:
+2.  **Prerequisites**: Force an "AUTHORIZED" state in `backend/models/curfew.py`:
     ```python
     # In backend/models/curfew.py (Line 4)
     CURFEW_START = datetime.now().replace(second=0, microsecond=0)  
     ```
-2.  **Action**: Stand in front of the camera and click **"Mark Attendance"**.
+3. **Action**: Stand in front of the camera and click **"Mark Attendance"**.
 3.  **Result**: The system should recognize you, show **"PRESENT: [YOUR NAME]"**, and flash a green success overlay.
 
 ## 🎭 Scenario 2: The "Unrecognized Intruder" (Kiosk)
@@ -35,7 +35,7 @@ Use this guide to perform a seamless demonstration anywhere at anytime. Each cas
     ```python
     # In backend/app/routes.py (Line 45)
     HOSTEL_LOCATIONS = {
-        "amna": {"lat": YOUR_LAT, "lng": YOUR_LNG}, 
+        "ayesha": {"lat": YOUR_LAT, "lng": YOUR_LNG}, 
     }
     ```
 3.  **Action**: Enter your CMS ID, take a selfie, and click **"Mark Location Attendance"**.
@@ -61,7 +61,7 @@ Use this guide to perform a seamless demonstration anywhere at anytime. Each cas
 ## 🎭 Scenario 5: The "Command Center" (Admin)
 **Goal**: Show real-time data synchronization.
 1.  **Navigate**: Open the `Dashboard`.
-2.  **Action**: Perform an "Unknown" attempt on another device.
+2.  **Action**: Perform an "Unknown" attempt on another tab.
 3.  **Observation**: Watch the **"Unknown Attempts"** counter increase and a new alert appear in the **"System Alerts"** list without refreshing the page (if auto-refresh is on).
 
 ## 🎭 Scenario 6: Secure Registration

@@ -9,6 +9,11 @@ Instead of a traditional classification model (which can only recognize a fixed 
 *   Images of the **same person** are close together.
 *   Images of **different people** are far apart.
 
+## Mobile Logic
+1. Something they know: Their CMS ID.
+2. Something they are: Their Face (via a selfie).
+3. Somewhere they are: Their GPS Location.
+
 ---
 
 ## 2. The Deep Learning Pipeline
