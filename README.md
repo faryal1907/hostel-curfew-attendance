@@ -7,7 +7,7 @@ A high-performance, deep learning-powered attendance system designed for univers
 ## 🌟 Core Features
 
 ### 1. Deep Learning Facial Verification
-*   **Technology**: Uses a Convolutional Neural Network (CNN) to extract 128-dimensional facial embeddings.
+*   **Technology**: Uses Restnet-34 to extract 128-dimensional facial embeddings.
 *   **Accuracy**: Implements similarity learning with a tuned Euclidean distance threshold (0.6) to differentiate between registered students and unauthorized individuals.
 *   **Real-time Processing**: Optimized for low-latency verification in both the Kiosk and Mobile modes.
 
@@ -97,3 +97,24 @@ The system comes pre-seeded with a default administrator account for the first r
 
 ## ⚖️ License
 Developed for academic purposes at NUST H-12 Campus. All rights reserved.
+
+---
+
+## 🧪 Testing & Performance Benchmarking
+
+To verify the system's reliability and the performance metrics mentioned in the documentation, follow these steps:
+
+### 1. Seeding Test Data (1,000 Users)
+Before benchmarking, you can populate the database with a large-scale student directory (1,000 mock students with random 128D embeddings):
+```powershell
+$env:PYTHONPATH="."; .\venv\Scripts\python.exe tests/seed_mock_data.py
+```
+
+### 2. Running Automated Performance Tests
+Measure the end-to-end latency, face detection speed, and database lookup efficiency:
+```powershell
+$env:PYTHONPATH="."; .\venv\Scripts\python.exe tests/run_benchmarks.py
+```
+
+### 3. Real-time Profiling
+The system is integrated with a benchmarking decorator that logs the execution time of core AI functions (like face extraction and matching) directly to the terminal when the server is active.
